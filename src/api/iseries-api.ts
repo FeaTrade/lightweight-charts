@@ -11,6 +11,7 @@ import {
 	SeriesType,
 } from '../model/series-options';
 import { Range, Time } from '../model/time-data';
+import { DrawingPane } from '../renderers/drawing-pane';
 
 import { SeriesDataItemTypeMap } from './data-consumer';
 import { IPriceLine } from './iprice-line';
@@ -218,6 +219,8 @@ export interface ISeriesApi<TSeriesType extends SeriesType> {
 	 * Returns an array of series markers.
 	 */
 	markers(): SeriesMarker<Time>[];
+
+	setDrawingPane(pane: DrawingPane): void;
 
 	/**
 	 * Creates a new price line

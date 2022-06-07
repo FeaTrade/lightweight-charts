@@ -17,6 +17,7 @@ import {
 } from '../model/series-options';
 import { Logical, OriginalTime, Range, Time, TimePoint, TimePointIndex } from '../model/time-data';
 import { TimeScaleVisibleRange } from '../model/time-scale-visible-range';
+import { DrawingPane } from '../renderers/drawing-pane';
 
 import { IPriceScaleApiProvider } from './chart-api';
 import { DataUpdatesConsumer, SeriesDataItemTypeMap } from './data-consumer';
@@ -39,6 +40,10 @@ export class SeriesApi<TSeriesType extends SeriesType> implements ISeriesApi<TSe
 		this._series = series;
 		this._dataUpdatesConsumer = dataUpdatesConsumer;
 		this._priceScaleApiProvider = priceScaleApiProvider;
+	}
+	
+	setDrawingPane(pane: DrawingPane): void {
+		this._series.setDrawingPane(pane);
 	}
 
 	public priceFormatter(): IPriceFormatter {

@@ -17,6 +17,8 @@ export {
 
 export { createChart } from './api/create-chart';
 
+export { DrawingPane } from './renderers/drawing-pane';
+
 /**
  * Returns the current version as a string. For example `'3.3.0'`.
  */

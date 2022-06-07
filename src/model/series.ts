@@ -6,6 +6,7 @@ import { VolumeFormatter } from '../formatters/volume-formatter';
 import { ensureNotNull } from '../helpers/assertions';
 import { IDestroyable } from '../helpers/idestroyable';
 import { isInteger, merge } from '../helpers/strict-type-checks';
+import { DrawingPane } from '../renderers/drawing-pane';
 
 import { SeriesAreaPaneView } from '../views/pane/area-pane-view';
 import { SeriesBarsPaneView } from '../views/pane/bars-pane-view';
@@ -16,6 +17,7 @@ import { IPaneView } from '../views/pane/ipane-view';
 import { IUpdatablePaneView } from '../views/pane/iupdatable-pane-view';
 import { SeriesLinePaneView } from '../views/pane/line-pane-view';
 import { PanePriceAxisView } from '../views/pane/pane-price-axis-view';
+import { SeriesDrawingPaneView } from '../views/pane/series-drawing-pane-view';
 import { SeriesHorizontalBaseLinePaneView } from '../views/pane/series-horizontal-base-line-pane-view';
 import { SeriesLastPriceAnimationPaneView } from '../views/pane/series-last-price-animation-pane-view';
 import { SeriesMarkersPaneView } from '../views/pane/series-markers-pane-view';
@@ -109,6 +111,7 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 	private _markers: readonly SeriesMarker<TimePoint>[] = [];
 	private _indexedMarkers: InternalSeriesMarker<TimePointIndex>[] = [];
 	private _markersPaneView!: SeriesMarkersPaneView;
+	private _drawingPaneView!: SeriesDrawingPaneView;
 	private _animationTimeoutId: TimerId | null = null;
 
 	public constructor(model: ChartModel, options: SeriesOptionsInternal<T>, seriesType: T) {
@@ -128,6 +131,10 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 		this._recreateFormatter();
 
 		this._recreatePaneViews();
+	}
+
+	public setDrawingPane(pane: DrawingPane) {
+		this._drawingPaneView.setDrawingPane(pane);
 	}
 
 	public destroy(): void {
@@ -371,7 +378,8 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 		res.push(
 			this._paneView,
 			this._priceLineView,
-			this._markersPaneView
+			this._markersPaneView,
+			this._drawingPaneView
 		);
 
 		const priceLineViews = this._customPriceLines.map((line: CustomPriceLine) => line.paneView());
@@ -421,6 +429,7 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 	public updateAllViews(): void {
 		this._paneView.update();
 		this._markersPaneView.update();
+		this._drawingPaneView.update();
 
 		for (const priceAxisView of this._priceAxisViews) {
 			priceAxisView.update();
@@ -594,6 +603,7 @@ export class Series<T extends SeriesType = SeriesType> extends PriceDataSource i
 
 	private _recreatePaneViews(): void {
 		this._markersPaneView = new SeriesMarkersPaneView(this, this.model());
+		this._drawingPaneView = new SeriesDrawingPaneView(this, this.model());
 
 		switch (this._seriesType) {
 			case 'Bar': {
