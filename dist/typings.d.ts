@@ -593,8 +593,21 @@ declare class Watermark extends DataSource {
 export declare abstract class DrawingPane {
 	protected series: Series;
 	protected model: ChartModel;
-	init(_series: Series, _model: ChartModel): void;
-	abstract render(ctx: CanvasRenderingContext2D): void;
+	private children;
+	init(series: Series, model: ChartModel): void;
+	addChild(child: DrawingPane): void;
+	removeChild(child: DrawingPane): boolean;
+	render(ctx: CanvasRenderingContext2D): void;
+	refresh(): void;
+	protected abstract draw(ctx: CanvasRenderingContext2D): void;
+	protected timeScale(): TimeScale;
+	protected x(x: number): Coordinate;
+	protected y(y: number): Coordinate;
+	protected priceScale(): PriceScale;
+	protected timeToIndex(timestamp: number): TimePointIndex | null;
+	protected indexToCoordinate(index: TimePointIndex): Coordinate;
+	protected timeToCoordinate(timestamp: number): Coordinate;
+	protected priceToCoordinate(price: number): Coordinate;
 }
 export declare const enum InvalidationLevel {
 	None = 0,
